@@ -4,6 +4,7 @@
 #define JOINT_DISPATCHER_TASK_TASK_HPP
 
 #include "joint_dispatcher/TaskBase.hpp"
+#include <joint_dispatcher/Dispatcher.hpp>
 
 namespace joint_dispatcher {
 
@@ -25,7 +26,17 @@ namespace joint_dispatcher {
     {
 	friend class TaskBase;
     protected:
+        typedef RTT::OutputPort<base::samples::Joints> OutputPort;
+        typedef RTT::InputPort<base::samples::Joints> InputPort;
 
+        std::vector<InputPort*> mInputPorts;
+        std::vector<OutputPort*> mOutputPorts;
+
+        Dispatcher mDispatcher;
+        base::samples::Joints mJoint;
+
+        /** Deletes all defined input and output ports */
+        void clearPorts();
 
 
     public:

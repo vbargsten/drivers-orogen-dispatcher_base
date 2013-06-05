@@ -13,11 +13,20 @@ task_context "Task" do
     # transition to a setup where all components use a configuration step.
     needs_configuration
 
+    # Output configuration
+    #
+    # The component will create the necessary ports at configure time based on
+    # the port names that are listed in this output configuration
+    property "outputs", "std/vector</joint_dispatcher/OutputConfiguration>"
+
     # Dispatch configuration
     #
     # The component will create the necessary ports at configure time based on
     # the port names that are listed in this dispatch configuration
-    property "dispatches", "joint_dispatcher/DispatchConfiguration"
+    #
+    # The output port names listed here must have a corresponding
+    # OutputConfiguration entry in the outputs property
+    property "dispatches", "std/vector</joint_dispatcher/SingleDispatchConfiguration>"
 
     # Dynamic input port declaration for the inputs
     dynamic_input_port /\w+/, 'base/samples/Joints'
