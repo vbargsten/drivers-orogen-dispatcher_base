@@ -70,8 +70,17 @@ bool Task::configureHook()
                 addEventPort(*port);
                 mDispatcher.addInput(conf.input);
             }
+            else if (dynamic_cast<InputPort*>(getPort(conf.input)) == 0)
+            {
+                LOG_ERROR("dispatch input %s is an output", conf.input.c_str());
+                return false;
+            }
+
             if (!getPort(conf.output))
+            {
                 LOG_ERROR("output port %s is used in the dispatch configuration, but does not have a corresponding output configuration", conf.output.c_str());
+                return false;
+            }
 
             JointSelection in_sel;
             in_sel.byName = conf.input_selection_by_name;
