@@ -8,6 +8,8 @@ import_types_from 'base'
 using_library 'joint_dispatcher'
 
 # Generic dispatch task for streams of base::samples::Joints
+#
+# By default, it is activated by the dispatches' input ports
 task_context "Task" do
     # This is the default from now on, and should not be removed. Rock will
     # transition to a setup where all components use a configuration step.
