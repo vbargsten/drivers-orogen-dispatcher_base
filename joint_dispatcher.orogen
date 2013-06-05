@@ -1,0 +1,28 @@
+name "joint_dispatcher"
+
+# If new data types need to be defined, they have to be put in a separate C++
+# header, and this header will be loaded here
+import_types_from "joint_dispatcherTypes.hpp"
+
+import_types_from 'base'
+using_library 'joint_dispatcher'
+
+# Generic dispatch task for streams of base::samples::Joints
+task_context "Task" do
+    # This is the default from now on, and should not be removed. Rock will
+    # transition to a setup where all components use a configuration step.
+    needs_configuration
+
+    # Dispatch configuration
+    #
+    # The component will create the necessary ports at configure time based on
+    # the port names that are listed in this dispatch configuration
+    property "dispatches", "joint_dispatcher/DispatchConfiguration"
+
+    # Dynamic input port declaration for the inputs
+    dynamic_input_port /\w+/, 'base/samples/Joints'
+
+    # Dynamic output port declaration for the inputs
+    dynamic_output_port /\w+/, 'base/samples/Joints'
+end
+
