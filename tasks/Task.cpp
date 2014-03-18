@@ -109,13 +109,29 @@ void Task::updateHook()
     for (size_t i = 0; i < mInputPorts.size(); ++i)
     {
         while (mInputPorts[i]->read(mJoint, false) == RTT::NewData)
-            mDispatcher.write(mInputPorts[i]->getName(), mJoint);
+        {
+            try
+            {
+                mDispatcher.write(mInputPorts[i]->getName(), mJoint);
+            } catch (base::samples::Joints::InvalidName iv)
+            {
+                LOG_ERROR("Name not found while reading data from input port %s ", mInputPorts[i]->getName().c_str());
+                LOG_ERROR("Names in input are :");
+                for(std::vector<std::string>::const_iterator it = mJoint.names.begin(); it != mJoint.names.end(); it++)
+                {
+                    LOG_ERROR("  %s", it->c_str());
+                }
+                throw iv;
+            }
+        }
     }
 
     for (size_t i = 0; i < mOutputPorts.size(); ++i)
     {
         if (mDispatcher.read(mOutputPorts[i]->getName(), mJoint))
+        {
             mOutputPorts[i]->write(mJoint);
+        }
     }
 }
 void Task::errorHook()
