@@ -6,4 +6,5 @@
 
   <depend package="base/orogen/types" />
   <depend package="control/joint_dispatcher" />
+  <tags>stable</tags>
 </package>
