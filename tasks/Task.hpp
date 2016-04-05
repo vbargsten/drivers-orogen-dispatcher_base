@@ -34,6 +34,8 @@ namespace joint_dispatcher {
 
         Dispatcher mDispatcher;
         base::samples::Joints mJoint;
+	
+	std::map<std::string,std::string> jointToStreamMap;
 
         /** Deletes all defined input and output ports */
         void clearPorts();
