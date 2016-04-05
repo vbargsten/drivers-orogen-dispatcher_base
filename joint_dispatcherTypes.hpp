@@ -39,6 +39,13 @@ namespace joint_dispatcher {
          */
         std::vector<std::string> output_selection_by_name;
     };
+    
+    struct DefaultJointConfiguration
+    {
+      std::string jointName;
+      
+      double position;
+    };
 }
 
 #endif

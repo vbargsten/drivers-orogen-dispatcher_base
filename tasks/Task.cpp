@@ -58,6 +58,7 @@ bool Task::configureHook()
         }
     }
 
+    std::map<std::string,std::string> jointToStreamMap;
     { // Now create the inputs *and* the dispatches at the same time
         vector<SingleDispatchConfiguration> config(_dispatches.get());
         for (size_t i = 0; i < config.size(); ++i)
@@ -89,6 +90,23 @@ bool Task::configureHook()
             out_sel.byName = conf.output_selection_by_name;
             out_sel.byIndex = conf.output_selection_by_index;
             mDispatcher.addDispatch(conf.input, in_sel, conf.output, out_sel);
+	    
+	    for(size_t j=0; j<conf.input_selection_by_name.size();j++)
+	    {
+		jointToStreamMap.insert(std::make_pair(conf.input_selection_by_name[j],conf.input));
+	    }
+        }
+    }
+    
+    { //Create default Configurations for joints
+	vector<DefaultJointConfiguration> config(_defaultConfiguration.get());
+	for (size_t i = 0; i < config.size(); ++i)
+        {
+	  DefaultJointConfiguration const& conf(config[i]);
+	  base::samples::Joints joints;
+	  joints.names.push_back(jointToStreamMap.at(conf.jointName));
+	  joints.elements.push_back(base::JointState::Position(conf.position));
+	  mDispatcher.write(jointToStreamMap.at(conf.jointName),joints);
         }
     }
     
