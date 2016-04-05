@@ -110,17 +110,16 @@ bool Task::startHook()
         vector<DefaultJointConfiguration> config(_defaultConfiguration.get());
         for (size_t i = 0; i < config.size(); ++i)
         {
-            bool found = false;
             DefaultJointConfiguration const& conf(config[i]);
 
-            Output *out = NULL;
             for (size_t j = 0; j < mOutputPorts.size(); ++j)
             {
                 Dispatcher::ChannelID id = mDispatcher.getOutputByName(mOutputPorts[j]->getName());
                 
-                out = &(mDispatcher.getOutput(id)); 
+                Output &out(mDispatcher.getOutput(id)); 
                 
-                std::vector<std::string> names = out->getJointNames();
+                std::vector<std::string> names = out.getJointNames();
+                bool found = false;
 
                 for(size_t k = 0; k < names.size(); ++k)
                 {
@@ -133,17 +132,14 @@ bool Task::startHook()
                 
                 if(found)
                     break;
-            }
                 
-            if(!found)
-                throw std::runtime_error("Error, no joint " + conf.jointName + " found in configuration for default initalization");
-                
-            std::vector<std::string> names;
-            names.push_back(conf.jointName);
-                
-            std::vector<size_t> idx = out->mapJointNamesToIndex(names);
+                names.clear();
+                names.push_back(conf.jointName);
+                    
+                std::vector<size_t> idx = out.mapJointNamesToIndex(names);
 
-            out->updateJoint(idx[0], base::Time::now(), base::JointState::Position(conf.position));
+                out.updateJoint(idx[0], base::Time::now(), base::JointState::Position(conf.position));
+            }
         }
     }
     return true;
