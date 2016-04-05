@@ -130,8 +130,8 @@ bool Task::startHook()
                     }
                 }
                 
-                if(found)
-                    break;
+                if(!found)
+                    continue;
                 
                 names.clear();
                 names.push_back(conf.jointName);
