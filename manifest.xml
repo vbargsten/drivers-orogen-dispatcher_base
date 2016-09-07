@@ -1,7 +1,7 @@
 <package>
   <description brief="oroGen integration of the joint dispatch functionality">
   </description>
-  <maintainer>Sylvain Joyeus/sylvain.joyeux@m4x.org</maintainer>
+  <maintainer>Janosch Machowinski/janosch.machowinski@dfki.de</maintainer>
   <license>LGPLv2 or later</license>
 
   <depend package="base/orogen/types" />
