@@ -29,6 +29,8 @@ task_context "Task" do
     # The output port names listed here must have a corresponding
     # OutputConfiguration entry in the outputs property
     property "dispatches", "std/vector</joint_dispatcher/SingleDispatchConfiguration>"
+    
+    property "defaultConfiguration", "std/vector</joint_dispatcher/DefaultJointConfiguration>"
 
     # Dynamic input port declaration for the inputs
     dynamic_input_port /\w+/, 'base/samples/Joints'

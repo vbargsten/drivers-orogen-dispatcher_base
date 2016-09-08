@@ -89,8 +89,15 @@ bool Task::configureHook()
             out_sel.byName = conf.output_selection_by_name;
             out_sel.byIndex = conf.output_selection_by_index;
             mDispatcher.addDispatch(conf.input, in_sel, conf.output, out_sel);
+	    
+	    for(size_t j=0; j<conf.input_selection_by_name.size();j++)
+	    {
+		jointToStreamMap.insert(std::make_pair(conf.input_selection_by_name[j],conf.input));
+	    }
         }
     }
+    
+
     
     return true;
 }
@@ -99,7 +106,42 @@ bool Task::startHook()
     if (! TaskBase::startHook())
         return false;
 
-    mDispatcher.reset();
+    mDispatcher.reset();    { //Create default Configurations for joints
+        vector<DefaultJointConfiguration> config(_defaultConfiguration.get());
+        for (size_t i = 0; i < config.size(); ++i)
+        {
+            DefaultJointConfiguration const& conf(config[i]);
+
+            for (size_t j = 0; j < mOutputPorts.size(); ++j)
+            {
+                Dispatcher::ChannelID id = mDispatcher.getOutputByName(mOutputPorts[j]->getName());
+                
+                Output &out(mDispatcher.getOutput(id)); 
+                
+                std::vector<std::string> names = out.getJointNames();
+                bool found = false;
+
+                for(size_t k = 0; k < names.size(); ++k)
+                {
+                    if(names[k] == conf.jointName)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                
+                if(!found)
+                    continue;
+                
+                names.clear();
+                names.push_back(conf.jointName);
+                    
+                std::vector<size_t> idx = out.mapJointNamesToIndex(names);
+
+                out.updateJoint(idx[0], base::Time::now(), base::JointState::Position(conf.position));
+            }
+        }
+    }
     return true;
 }
 void Task::updateHook()
