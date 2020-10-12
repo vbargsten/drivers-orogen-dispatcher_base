@@ -88,7 +88,7 @@ bool Task::configureHook()
             JointSelection out_sel;
             out_sel.byName = conf.output_selection_by_name;
             out_sel.byIndex = conf.output_selection_by_index;
-            mDispatcher.addDispatch(conf.input, in_sel, conf.output, out_sel);
+            mDispatcher.addDispatch(conf.input, in_sel, conf.output, out_sel, conf.defer_output);
 	    
 	    for(size_t j=0; j<conf.input_selection_by_name.size();j++)
 	    {

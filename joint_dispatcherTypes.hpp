@@ -38,6 +38,12 @@ namespace joint_dispatcher {
          * select by index, use output_selection_by_index instead
          */
         std::vector<std::string> output_selection_by_name;
+               
+        /*
+         * If true, do not trigger immediate write
+         * to the output port, i.e. wait for another dispatch to do so
+         */
+        bool defer_output = false;
     };
     
     struct DefaultJointConfiguration
