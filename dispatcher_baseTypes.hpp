@@ -1,10 +1,10 @@
-#ifndef joint_dispatcher_TYPES_HPP
-#define joint_dispatcher_TYPES_HPP
+#ifndef dispatcher_base_TYPES_HPP
+#define dispatcher_base_TYPES_HPP
 
 #include <vector>
 #include <string>
 
-namespace joint_dispatcher {
+namespace dispatcher_base {
     struct OutputConfiguration
     {
         std::string name;

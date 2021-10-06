@@ -1,12 +1,12 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.hpp */
 
-#ifndef JOINT_DISPATCHER_TASK_TASK_HPP
-#define JOINT_DISPATCHER_TASK_TASK_HPP
+#ifndef DISPATCHER_BASE_TASK_TASK_HPP
+#define DISPATCHER_BASE_TASK_TASK_HPP
 
-#include "joint_dispatcher/TaskBase.hpp"
-#include <joint_dispatcher/Dispatcher.hpp>
+#include "dispatcher_base/TaskBase.hpp"
+#include <dispatcher_base/Dispatcher.hpp>
 
-namespace joint_dispatcher {
+namespace dispatcher_base {
 
     /*! \class Task 
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
@@ -17,25 +17,26 @@ namespace joint_dispatcher {
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','joint_dispatcher::Task')
+         task('custom_task_name','dispatcher_base::Task')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument. 
      */
+    template <typename T>
     class Task : public TaskBase
     {
 	friend class TaskBase;
     protected:
-        typedef RTT::OutputPort<base::samples::Joints> OutputPort;
-        typedef RTT::InputPort<base::samples::Joints> InputPort;
+        typedef RTT::OutputPort<base::NamedVector<T>> OutputPort;
+        typedef RTT::InputPort<base::NamedVector<T>> InputPort;
 
         std::vector<InputPort*> mInputPorts;
         std::vector<OutputPort*> mOutputPorts;
 
-        Dispatcher mDispatcher;
-        base::samples::Joints mJoint;
-	
-	std::map<std::string,std::string> jointToStreamMap;
+        Dispatcher<T> mDispatcher;
+        base::NamedVector<T> mJoint;
+
+        std::map<std::string,std::string> jointToStreamMap;
 
         /** Deletes all defined input and output ports */
         void clearPorts();
@@ -46,7 +47,7 @@ namespace joint_dispatcher {
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        Task(std::string const& name = "joint_dispatcher::Task");
+        Task(std::string const& name = "dispatcher_base::Task");
 
         /** TaskContext constructor for Task 
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 
@@ -57,7 +58,7 @@ namespace joint_dispatcher {
 
         /** Default deconstructor of Task
          */
-	~Task();
+        ~Task();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the

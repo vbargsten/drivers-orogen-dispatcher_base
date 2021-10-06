@@ -1,13 +1,13 @@
-name "joint_dispatcher"
+name "dispatcher_base"
 
 # If new data types need to be defined, they have to be put in a separate C++
 # header, and this header will be loaded here
-import_types_from "joint_dispatcherTypes.hpp"
+import_types_from "dispatcher_baseTypes.hpp"
 
 import_types_from 'base'
-using_library 'joint_dispatcher'
+using_library 'dispatcher_base'
 
-# Generic dispatch task for streams of base::samples::Joints
+# Generic dispatch task for streams of base::NamedVector<T>
 #
 # By default, it is activated by the dispatches' input ports
 task_context "Task" do
@@ -19,7 +19,7 @@ task_context "Task" do
     #
     # The component will create the necessary ports at configure time based on
     # the port names that are listed in this output configuration
-    property "outputs", "std/vector</joint_dispatcher/OutputConfiguration>"
+    property "outputs", "std/vector</dispatcher_base/OutputConfiguration>"
 
     # Dispatch configuration
     #
@@ -28,9 +28,9 @@ task_context "Task" do
     #
     # The output port names listed here must have a corresponding
     # OutputConfiguration entry in the outputs property
-    property "dispatches", "std/vector</joint_dispatcher/SingleDispatchConfiguration>"
+    property "dispatches", "std/vector</dispatcher_base/SingleDispatchConfiguration>"
     
-    property "defaultConfiguration", "std/vector</joint_dispatcher/DefaultJointConfiguration>"
+    property "defaultConfiguration", "std/vector</dispatcher_base/DefaultJointConfiguration>"
 
     # Dynamic input port declaration for the inputs
     dynamic_input_port /\w+/, 'base/samples/Joints'

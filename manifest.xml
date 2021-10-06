@@ -6,6 +6,6 @@
   <license>LGPLv2 or later</license>
 
   <depend package="base/orogen/types" />
-  <depend package="control/joint_dispatcher" />
+  <depend package="control/dispatcher_base" />
   <tags>stable</tags>
 </package>

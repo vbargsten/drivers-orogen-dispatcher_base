@@ -3,20 +3,23 @@
 #include "Task.hpp"
 #include <base/Logging.hpp>
 
-using namespace joint_dispatcher;
+using namespace dispatcher_base;
 using namespace std;
 
-Task::Task(std::string const& name)
+template <typename T>
+Task<T>::Task(std::string const& name)
     : TaskBase(name)
 {
 }
 
-Task::Task(std::string const& name, RTT::ExecutionEngine* engine)
+template <typename T>
+Task<T>::Task(std::string const& name, RTT::ExecutionEngine* engine)
     : TaskBase(name, engine)
 {
 }
 
-Task::~Task()
+template <typename T>
+Task<T>::~Task()
 {
 }
 
@@ -25,13 +28,13 @@ Task::~Task()
 /// The following lines are template definitions for the various state machine
 // hooks defined by Orocos::RTT. See Task.hpp for more detailed
 // documentation about them.
-
-bool Task::configureHook()
+template <typename T>
+bool Task<T>::configureHook()
 {
     if (! TaskBase::configureHook())
         return false;
 
-    mDispatcher = Dispatcher();
+    mDispatcher = Dispatcher<T>();
     clearPorts(); // make sure all created ports are removed first, in case we aborted one configureHook already
 
     { // Create the outputs
@@ -82,10 +85,10 @@ bool Task::configureHook()
                 return false;
             }
 
-            JointSelection in_sel;
+            ElementSelection<T> in_sel;
             in_sel.byName = conf.input_selection_by_name;
             in_sel.byIndex = conf.input_selection_by_index;
-            JointSelection out_sel;
+            ElementSelection<T> out_sel;
             out_sel.byName = conf.output_selection_by_name;
             out_sel.byIndex = conf.output_selection_by_index;
             mDispatcher.addDispatch(conf.input, in_sel, conf.output, out_sel, conf.defer_output);
@@ -101,6 +104,8 @@ bool Task::configureHook()
     
     return true;
 }
+
+template <typename T>
 bool Task::startHook()
 {
     if (! TaskBase::startHook())
@@ -114,11 +119,11 @@ bool Task::startHook()
 
             for (size_t j = 0; j < mOutputPorts.size(); ++j)
             {
-                Dispatcher::ChannelID id = mDispatcher.getOutputByName(mOutputPorts[j]->getName());
+                Dispatcher<T>::ChannelID id = mDispatcher.getOutputByName(mOutputPorts[j]->getName());
                 
-                Output &out(mDispatcher.getOutput(id)); 
+                Output<T> &out(mDispatcher.getOutput(id)); 
                 
-                std::vector<std::string> names = out.getJointNames();
+                std::vector<std::string> names = out.getNames();
                 bool found = false;
 
                 for(size_t k = 0; k < names.size(); ++k)
@@ -136,15 +141,17 @@ bool Task::startHook()
                 names.clear();
                 names.push_back(conf.jointName);
                     
-                std::vector<size_t> idx = out.mapJointNamesToIndex(names);
+                std::vector<size_t> idx = out.mapNamesToIndex(names);
 
-                out.updateJoint(idx[0], base::Time::now(), base::JointState::Position(conf.position));
+                out.updateJoint(idx[0], base::Time::now(), T::Position(conf.position));
             }
         }
     }
     return true;
 }
-void Task::updateHook()
+
+template <typename T>
+void Task<T>::updateHook()
 {
     TaskBase::updateHook();
 
@@ -155,7 +162,7 @@ void Task::updateHook()
             try
             {
                 mDispatcher.write(mInputPorts[i]->getName(), mJoint);
-            } catch (base::samples::Joints::InvalidName iv)
+            } catch (base::NamedVector<T>::InvalidName iv)
             {
                 LOG_ERROR("Name not found while reading data from input port %s ", mInputPorts[i]->getName().c_str());
                 LOG_ERROR("Names in input are :");
@@ -176,21 +183,26 @@ void Task::updateHook()
         }
     }
 }
-void Task::errorHook()
+
+template <typename T>
+void Task<T>::errorHook()
 {
     TaskBase::errorHook();
 }
-void Task::stopHook()
+template <typename T>
+void Task<T>::stopHook()
 {
     TaskBase::stopHook();
 }
-void Task::cleanupHook()
+template <typename T>
+void Task<T>::cleanupHook()
 {
     clearPorts();
     TaskBase::cleanupHook();
 }
 
-void Task::clearPorts()
+template <typename T>
+void Task<T>::clearPorts()
 {
     for (size_t i = 0; i < mInputPorts.size(); ++i)
     {
