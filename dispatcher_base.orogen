@@ -30,12 +30,12 @@ task_context "Task" do
     # OutputConfiguration entry in the outputs property
     property "dispatches", "std/vector</dispatcher_base/SingleDispatchConfiguration>"
     
-    property "defaultConfiguration", "std/vector</dispatcher_base/DefaultJointConfiguration>"
+    #property "defaultConfiguration", "std/vector</dispatcher_base/DefaultJointConfiguration>"
 
     # Dynamic input port declaration for the inputs
-    dynamic_input_port /\w+/, 'base/samples/Joints'
+    #dynamic_input_port /\w+/, 'base/samples/Joints'
 
     # Dynamic output port declaration for the inputs
-    dynamic_output_port /\w+/, 'base/samples/Joints'
+    #dynamic_output_port /\w+/, 'base/samples/Joints'
 end
 
