@@ -1,20 +1,21 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.cpp */
-
+#include "DispatcherTaskHelper.cpp"
 #include "Task.hpp"
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
+#include <dispatcher_base/Dispatcher_impl.hpp>
 
 using namespace dispatcher_base;
 using namespace std;
 
 
 Task::Task(std::string const& name)
-    : DispatcherBaseTask<int>(name)
+    : TaskBase(name), dispatcherHelper(this)
 {
 }
 
 
 Task::Task(std::string const& name, RTT::ExecutionEngine* engine)
-    : DispatcherBaseTask<int>(name, engine)
+    : TaskBase(name, engine), dispatcherHelper(this)
 {
 }
 
@@ -29,10 +30,12 @@ Task::~Task()
 // hooks defined by Orocos::RTT. See Task.hpp for more detailed
 // documentation about them.
 // /*
-// bool Task::configureHook()
-// {
-//     if (! TaskBase::configureHook())
-//         return false;*/
+bool Task::configureHook()
+{
+    if (! TaskBase::configureHook())
+        return false;
+    
+    dispatcherHelper.configureHook( _outputs.value(), _dispatches.value() );
 
     /*mDispatcher = Dispatcher();
     clearPorts(); // make sure all created ports are removed first, in case we aborted one configureHook already
@@ -100,16 +103,16 @@ Task::~Task()
         }
     }*/
     
-/*
+
     
     return true;
-}*/
+}
 
 
-// bool Task::startHook()
-// {
-//     if (! TaskBase::startHook())
-//         return false;
+bool Task::startHook()
+{
+    if (! TaskBase::startHook())
+        return false;
 
     /*mDispatcher.reset();    { //Create default Configurations for joints
         vector<DefaultJointConfiguration> config(_defaultConfiguration.get());
@@ -147,75 +150,32 @@ Task::~Task()
             }
         }
     }*/
-//     return true;
-// }
+    return true;
+}
 
-/*
+
 void Task::updateHook()
 {
-    TaskBase::updateHook();*/
-
-    /*for (size_t i = 0; i < mInputPorts.size(); ++i)
-    {
-        while (mInputPorts[i]->read(mJoint, false) == RTT::NewData)
-        {
-            try
-            {
-                mDispatcher.write(mInputPorts[i]->getName(), mJoint);
-            } catch (base::NamedVector::InvalidName iv)
-            {
-                LOG_ERROR("Name not found while reading data from input port %s ", mInputPorts[i]->getName().c_str());
-                LOG_ERROR("Names in input are :");
-                for(std::vector<std::string>::const_iterator it = mJoint.names.begin(); it != mJoint.names.end(); it++)
-                {
-                    LOG_ERROR("  %s", it->c_str());
-                }
-                throw iv;
-            }
-        }
-    }
-
-    for (size_t i = 0; i < mOutputPorts.size(); ++i)
-    {
-        if (mDispatcher.read(mOutputPorts[i]->getName(), mJoint))
-        {
-            mOutputPorts[i]->write(mJoint);
-        }
-    }*/
-// }
+    TaskBase::updateHook();    
+    dispatcherHelper.updateHook();
+}
 
 
-// void Task::errorHook()
-// {
-//     TaskBase::errorHook();
-// }
-// 
-// void Task::stopHook()
-// {
-//     TaskBase::stopHook();
-// }
-// 
-// void Task::cleanupHook()
-// {
-//     clearPorts();
-//     TaskBase::cleanupHook();
-// }
+void Task::errorHook()
+{
+    TaskBase::errorHook();
+    dispatcherHelper.errorHook();
+}
 
+void Task::stopHook()
+{
+    TaskBase::stopHook();
+    dispatcherHelper.stopHook();
+}
 
-// void Task::clearPorts()
-// {
-//     /*for (size_t i = 0; i < mInputPorts.size(); ++i)
-//     {
-//         ports()->removePort(mInputPorts[i]->getName());
-//         delete mInputPorts[i];
-//     }
-//     mInputPorts.clear();
-// 
-//     for (size_t i = 0; i < mOutputPorts.size(); ++i)
-//     {
-//         ports()->removePort(mOutputPorts[i]->getName());
-//         delete mOutputPorts[i];
-//     }
-//     mOutputPorts.clear();*/
-// }
+void Task::cleanupHook()
+{
+    TaskBase::cleanupHook();
+    dispatcherHelper.cleanupHook();
+}
 

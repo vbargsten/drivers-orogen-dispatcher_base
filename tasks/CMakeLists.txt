@@ -1,8 +1,9 @@
 # Generated from orogen/lib/orogen/templates/tasks/CMakeLists.txt
 
 include(dispatcher_baseTaskLib)
+LIST(APPEND DISPATCHER_BASE_TASKLIB_SOURCES "DispatcherTaskHelper.cpp")
 ADD_LIBRARY(${DISPATCHER_BASE_TASKLIB_NAME} SHARED 
-    ${DISPATCHER_BASE_TASKLIB_SOURCES} "DispatcherBaseTask.cpp")
+    ${DISPATCHER_BASE_TASKLIB_SOURCES})
 add_dependencies(${DISPATCHER_BASE_TASKLIB_NAME}
     regen-typekit)
 
@@ -16,6 +17,6 @@ INSTALL(TARGETS ${DISPATCHER_BASE_TASKLIB_NAME}
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib/orocos)
 
-INSTALL(FILES ${DISPATCHER_BASE_TASKLIB_HEADERS} "DispatcherBaseTask.hpp"
+INSTALL(FILES ${DISPATCHER_BASE_TASKLIB_HEADERS} "DispatcherTaskHelper.hpp"
     DESTINATION include/orocos/dispatcher_base)
 

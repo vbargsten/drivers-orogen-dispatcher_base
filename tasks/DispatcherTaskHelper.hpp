@@ -1,16 +1,15 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.hpp */
 
-#ifndef DISPATCHER_BASE_TASK_TASK_HPP
-#define DISPATCHER_BASE_TASK_TASK_HPP
+#ifndef DISPATCHER_BASE_TASK_DispatcherTaskHelper_HPP
+#define DISPATCHER_BASE_TASK_DispatcherTaskHelper_HPP
 
-#include "DispatcherTaskHelper.hpp"
-#include "dispatcher_base/TaskBase.hpp"
+#include <rtt/TaskContext.hpp>
 #include <dispatcher_base/Dispatcher.hpp>
-#include <base/samples/Joints.hpp>
-#include <dispatcher_base/Dispatcher.hpp>
+#include <dispatcher_base/Dispatcher_impl.hpp>
+#include <dispatcher_base/dispatcher_baseTypes.hpp>
 namespace dispatcher_base {
-// template <typename T> class DispatcherBaseTask<T>;
-    /*! \class Task 
+
+    /*! \class DispatcherTaskHelper 
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
      * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
@@ -19,38 +18,42 @@ namespace dispatcher_base {
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','dispatcher_base::Task')
+         task('custom_task_name','dispatcher_base::DispatcherTaskHelper')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument. 
      */
-    template class DispatcherTaskHelper<int>;
-    
-    
-    class Task : public TaskBase
+    template <typename T>
+    class DispatcherTaskHelper
     {
-    friend class TaskBase;
     protected:
+        typedef RTT::OutputPort<base::NamedVector<T>> OutputPort;
+        typedef RTT::InputPort<base::NamedVector<T>> InputPort;
 
-        DispatcherTaskHelper<int> dispatcherHelper;
-        
+        std::vector<InputPort*> mInputPorts;
+        std::vector<OutputPort*> mOutputPorts;
+
+        Dispatcher<T> mDispatcher;
+        base::NamedVector<T> mJoint;
+
+        std::map<std::string,std::string> jointToStreamMap;
+
+        /** Deletes all defined input and output ports */
+        void clearPorts();
+
+        RTT::TaskContext *task = nullptr;
+
     public:
-        /** TaskContext constructor for Task
+        /** TaskContext constructor for DispatcherTaskHelper
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        Task(std::string const& name = "dispatcher_base::Task");
+        DispatcherTaskHelper(RTT::TaskContext* task);
 
-        /** TaskContext constructor for Task 
-         * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices. 
-         * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task. 
-         * 
-         */
-        Task(std::string const& name, RTT::ExecutionEngine* engine);
 
         /** Default deconstructor of Task
          */
-        ~Task();
+        ~DispatcherTaskHelper();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the
@@ -66,7 +69,7 @@ namespace dispatcher_base {
          end
          \endverbatim
          */
-        bool configureHook();
+        bool configureHook(std::vector< ::dispatcher_base::OutputConfiguration >& output_config, std::vector< ::dispatcher_base::SingleDispatchConfiguration > dispatch_config);
 
         /** This hook is called by Orocos when the state machine transitions
          * from Stopped to Running. If it returns false, then the component will
@@ -110,9 +113,7 @@ namespace dispatcher_base {
          */
         void cleanupHook();
     };
-    
 }
 
 #endif
-
 
