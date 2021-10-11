@@ -2,6 +2,7 @@
 
 #include "Task.hpp"
 #include <base/Logging.hpp>
+#include "DispatcherBaseTask.cpp"
 
 using namespace dispatcher_base;
 using namespace std;

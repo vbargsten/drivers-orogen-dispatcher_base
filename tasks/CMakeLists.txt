@@ -2,7 +2,7 @@
 
 include(dispatcher_baseTaskLib)
 ADD_LIBRARY(${DISPATCHER_BASE_TASKLIB_NAME} SHARED 
-    ${DISPATCHER_BASE_TASKLIB_SOURCES} "DispatcherBaseTask.cpp")
+    ${DISPATCHER_BASE_TASKLIB_SOURCES} "DispatcherBaseTask.cpp"  "DispatcherBaseTask.hpp")
 add_dependencies(${DISPATCHER_BASE_TASKLIB_NAME}
     regen-typekit)
 

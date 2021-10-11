@@ -5,7 +5,7 @@ name "dispatcher_base"
 import_types_from "dispatcher_baseTypes.hpp"
 
 import_types_from 'base'
-using_library 'dispatcher_base'
+# using_library 'dispatcher_base'
 
 # Generic dispatch task for streams of base::NamedVector<T>
 #
